@@ -1,0 +1,35 @@
+.background {
+    fill: none;
+    pointer-events: all; 
+}
+  
+.feature {
+    fill: #ccc;
+    cursor: pointer;
+}
+  
+.feature.active {
+    fill: #804040;
+}
+.feature:hover {
+    fill: #356996;
+}
+  
+.mesh {
+    fill: none;
+    stroke: #fff;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+body {
+    font-family: "calibri";
+    font-weight: bolder;
+}
+
+.h1 {
+    font-size: large;
+    text-align: center;
+}
+  
+
