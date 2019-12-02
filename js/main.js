@@ -13,51 +13,60 @@ function start() {
         height = 600,
         active = d3.select(null);
     
+    // projection definitions
     var projection = d3.geoMercator()
-                        .scale((width-1)/2/Math.PI)
-                        .translate([width/2, height/2 + 50]);
+                       .scale(150)
+                       .translate([width/2, height/2 + 100]);
+    var path = d3.geoPath()
+                 .projection(projection);
 
-    var path = d3.geoPath().projection(projection);
-
-    var zoom = d3.zoom().scaleExtent([1,8]).on("zoom", zoomed);
-
+    // SVG related definitions
     var svg = d3.select("body")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
-                .on("click", stopped, true)
-                .on("mousedown", function() {
-                    if(s !== 1) return;
-                    initX = d3.mouse(this)[0];
-                    mouseClicked = true;
-                })
-                .call(zoom);
-    //create svg
+                .on("click", stopped, true);
     svg.append("rect")
         .attr("class", "background")
         .attr("width", width)
         .attr("height", height)
         .on("click", reset);
-    
-    var g = svg.append("g");
 
-    
+    // World map data
+    var gBackground = svg.append("g");
     d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
         if (error) throw error;
 
-        g.selectAll("path")
+        gBackground.selectAll("path")
             .data(topojson.feature(world, world.objects.countries).features)
             .enter().append("path")
             .attr("d", path)
             .attr("class", "feature")
             .on("click", clicked);
         
-        g.append("path")
+        gBackground.append("path")
             .datum(topojson.mesh(world, world.objects.countries, function(a,b){return a !== b;}))
             .attr("class","mesh")
             .attr("d", path);
+
     });
 
+    // Aircraft incidents data
+    var gDataPoints = svg.append("g");
+    d3.csv("data/aircraft_incidents.csv", function(csv) {
+        
+        // Draw points
+        gDataPoints.selectAll("circles.points")
+            .data(csv)
+            .enter()
+            .append("circle")
+            .attr("r", 1)
+            .attr("transform", function(d) {
+                return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+            });
+    });
+
+    // When clicked a country
     var clicked = function(d) {
         var x, y, k;
 
@@ -74,15 +83,21 @@ function start() {
             centered = null;
         }
 
-        g.selectAll("path")
+        gBackground.selectAll("path")
             .classed("active", centered && function(d) { return d === centered; });
 
-        g.transition()
-            .duration(750)
+        // Zoom in
+        gBackground.transition()
+            .duration(1000)
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+            .style("stroke-width", 1.5 / k + "px");
+        gDataPoints.transition()
+            .duration(1000)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
     }
 
+    // When zooming out from a country
     var reset = function() {
         active.classed("active", false);
         active = d3.select(null);
