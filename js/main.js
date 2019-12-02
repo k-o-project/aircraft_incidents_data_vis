@@ -5,31 +5,37 @@ function start() {
     var centered;
 
     //variables
-    var width = 1000,
-        height = 600,
+    var width_Map = 1000,
+        width_Box = 600,
+        height_Map = 600,
+        height_Box = 600,
         active = d3.select(null);
     
     // projection definitions
     var projection = d3.geoMercator()
                        .scale(150)
-                       .translate([width/2, height/2 + 100]);
+                       .translate([width_Map/2, height_Map/2 + 100]);
     var path = d3.geoPath()
                  .projection(projection);
 
     // SVG related definitions
-    var svg = d3.select("body")
+    var svg_Map = d3.select(".vis_Map")
                 .append("svg")
-                .attr("width", width)
-                .attr("height", height)
+                .attr("width", width_Map)
+                .attr("height", height_Map)
                 .on("click", stopped, true);
-    svg.append("rect")
+    svg_Map.append("rect")
         .attr("class", "background")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", width_Map)
+        .attr("height", height_Map)
         .on("click", reset);
+    var svg_Box = d3.select(".vis_Box")
+                    .append("svg")
+                    .attr("width", width_Box)
+                    .attr("height", height_Box);
 
     // World map data
-    var gBackground = svg.append("g");
+    var gBackground = svg_Map.append("g");
     d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
         if (error) throw error;
 
@@ -48,18 +54,95 @@ function start() {
     });
 
     // Aircraft incidents data
-    var gDataPoints = svg.append("g");
-    d3.csv("data/aircraft_incidents.csv", function(csv) {
+    var gDataPoints = svg_Map.append("g");
+    // Filtering box
+    var gFilterBox = svg_Box.append("g");
+    
+    d3.csv("data/aircraft_incidents.csv", function(error, data) {
         
         // Draw points
         gDataPoints.selectAll("circles.points")
-            .data(csv)
+            .data(data)
             .enter()
             .append("circle")
             .attr("r", 1)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
             });
+
+        // Handler for dropdown value change
+        var dropdownChange = function() {
+            var selected_Option = document.getElementById("world_Filter").options[document.getElementById("world_Filter").selectedIndex].value;
+
+            updateOptions(selected_Option);
+        };
+
+        // A function that updates options
+        var updateOptions = function(selected_Option) {
+            
+            d3.csv("data/aircraft_incidents.csv", function(error, data) {
+
+                var filter_Options = [];
+                data.forEach(function(d) {
+
+                    switch (selected_Option) {
+
+                        case "event_Date":
+                            let year = d.Event_Date.split("/")[2];
+                            if (year < 20) {
+                                year = "20" + year; 
+                            } else {
+                                year = "19" + year;
+                            }
+                            if (!filter_Options.includes(year)) {
+                                filter_Options.push(year);
+                            }
+                            break;
+
+                        case "aircraft_Make":
+                            if (!filter_Options.includes(d.Make)) {
+                                filter_Options.push(d.Make);
+                            }
+                            break;
+
+                        case "broad_Phase_Of_Flight":
+                            if (!filter_Options.includes(d.Broad_Phase_of_Flight) && d.Broad_Phase_of_Flight.trim() !== "") {
+                                filter_Options.push(d.Broad_Phase_of_Flight);
+                            }
+                            break;
+                    }
+                });
+
+                // Remove old options
+                d3.selectAll(".radio_Option").remove();
+
+                // Add new options
+                filter_Options.sort();
+                filter_Options.forEach(function(d) {
+                    
+                    d3.select("#world_Filter_Options")
+                      .insert("input")
+                      .attr("class", "radio_Option")
+                      .attr('type', 'radio')
+                      .attr({
+                          name: "world_Filter_Option",
+                          value: function(d) { return d.toString(); },
+                      })
+                    d3.select("#world_Filter_Options")
+                      .append("label")
+                      .attr("class", "radio_Option")
+                      .html(d.toString());
+                    d3.select("#world_Filter_Options")
+                      .append("label")
+                      .attr("class", "radio_Option")
+                      .html("<br/>");
+                });
+                
+            });
+        };
+
+
+        d3.select("#world_Filter").on("change", dropdownChange);
     });
 
     // When clicked a country
@@ -73,8 +156,8 @@ function start() {
             k = 3;
             centered = d;
         } else {
-            x = width / 2;
-            y = height / 2;
+            x = width_Map / 2;
+            y = height_Map / 2;
             k = 1;
             centered = null;
         }
@@ -85,11 +168,11 @@ function start() {
         // Zoom in
         gBackground.transition()
             .duration(1000)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+            .attr("transform", "translate(" + width_Map / 2 + "," + height_Map / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
         gDataPoints.transition()
             .duration(1000)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+            .attr("transform", "translate(" + width_Map / 2 + "," + height_Map / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
     }
 
@@ -98,8 +181,8 @@ function start() {
         active.classed("active", false);
         active = d3.select(null);
 
-        svg.transition()
-            .duration(750)
+        svg_Map.transition()
+            .duration(1000)
             .call(zoom.transform, d3.zoomIdentity);
     }
 
