@@ -3,21 +3,35 @@ window.onload = start;
 function start() {
 
     var centered;
+    var initX;
+    var mouseClicked = false;
+    var s = 1;
+    var mouse;
 
     //variables
-    var width = 1000,
+    var width = 960,
         height = 600,
         active = d3.select(null);
     
-    var projection = d3.geoMercator().scale(100).translate([width/2, height/2]);
+    var projection = d3.geoMercator()
+                        .scale((width-1)/2/Math.PI)
+                        .translate([width/2, height/2 + 50]);
 
     var path = d3.geoPath().projection(projection);
+
+    var zoom = d3.zoom().scaleExtent([1,8]).on("zoom", zoomed);
 
     var svg = d3.select("body")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
-                .on("click", stopped, true);
+                .on("click", stopped, true)
+                .on("mousedown", function() {
+                    if(s !== 1) return;
+                    initX = d3.mouse(this)[0];
+                    mouseClicked = true;
+                })
+                .call(zoom);
     //create svg
     svg.append("rect")
         .attr("class", "background")
@@ -26,6 +40,7 @@ function start() {
         .on("click", reset);
     
     var g = svg.append("g");
+
     
     d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
         if (error) throw error;
@@ -79,6 +94,24 @@ function start() {
 
     var stopped = function() {
         if (d3.event.defaultPrevented) d3.event.stopPropagation();
+    }
+
+    var zoomed = function() {
+        var t = [d3.event.transform.x, d3.event.transform.y];
+        s = d3.event.transform.k;
+        var h = 0;
+
+        t[0] = Math.min(width/height) * (s - 1),
+                Math.max(width * (1 - s) - h * s, t[0]);
+        
+        t[1] = Math.min(h * (s - 1) + h * s, 
+                Math.max(height * (1 - s) - h * s, t[1]));
+
+        g.attr("transform", "translate(" + t + ")scale(" + s + ")");
+
+        d3.selectAll(".boundary").style("stroke-width", 1 /s);
+
+        mouse = d3.mouse(this);
     }
 
 }
