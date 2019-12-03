@@ -21,10 +21,10 @@
     cursor: pointer;
 }
 .feature2.active {
-    fill: #00f;
+    fill: #68201d;
 }
 .feature2:hover {
-    fill: rgb(132, 22, 223);
+    fill: #356996;
 }
   
 .mesh {
