@@ -119,8 +119,16 @@ function start() {
                     }
                 });
 
-                // Remove old options
+                // Remove old options and color the world map if nothing is selected
                 d3.selectAll(".radio_Option").remove();
+                console.log("selected_Option is " + selected_Option);
+                if (selected_Option === "") {
+                    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
+                        gBackground.selectAll(".feature")
+                           .data(topojson.feature(world, world.objects.countries).features)
+                           .style("fill", "#ccc");
+                    });
+                }
 
                 // Add new options
                 filter_Options.sort();
@@ -149,7 +157,6 @@ function start() {
             var option_List = document.forms[0];
             for (let i = 0; i < option_List.length; i++) {
                 if (option_List[i].checked) {
-                    // console.log("selected is " + option_List[i].value);
                     filterWorldMap(selected_Option, option_List[i].value);
                 }
             }
@@ -176,11 +183,6 @@ function start() {
                                 year = "00";
                             }
                             if(d.Event_Date.split("/")[2] == year) {
-                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                //     var new_Country = new Object();
-                                    
-                                //     country_List.push(d.Country);
-                                // }
 
                                 if (d.Country.trim() !== "") {
 
@@ -212,9 +214,6 @@ function start() {
 
                         case "aircraft_Make":
                             if (d.Make === filter_Value) {
-                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                //     country_List.push(d.Country);
-                                // }
 
                                 if (d.Country.trim() !== "") {
 
@@ -246,9 +245,6 @@ function start() {
 
                         case "broad_Phase_Of_Flight":
                             if (d.Broad_Phase_of_Flight === filter_Value) {
-                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                //     country_List.push(d.Country);
-                                // }
 
                                 if (d.Country.trim() !== "") {
 
@@ -278,6 +274,9 @@ function start() {
                             }
                             break;
                         
+                        default:
+                            country_List = [];
+                            break;
                     }
                 });
 
@@ -288,14 +287,7 @@ function start() {
                         max_Count = count_List[i];
                     }
                 }
-                
-                // console.log("country_List is " + country_List);
-                // console.log("count_List is " + count_List);
-                // console.log("max_Count is " + max_Count);
             });
-
-            
-            // console.log(country_List);
 
             // Apply color filter
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
@@ -307,8 +299,8 @@ function start() {
                                
                                if (d.properties) {
                                    let country_Name = d.properties.name;  
-                                   var color;
-                                   var flag2 = false;
+                                   var color = "#ccc";
+                                //    var flag2 = false;
                                    country_List.forEach(function(each) {
                                        if (each.name === country_Name) {
                                            color = d3.interpolateYlOrRd(each.count / max_Count);
@@ -316,13 +308,12 @@ function start() {
                                            return;
                                        }
                                    });
-                                   if (!flag2) {
-                                       color = "#ccc";
-                                   }  
+                                //    if (!flag2) {
+                                //        color = "#ccc";
+                                //    }  
                                    return color;
                                }
-                           })
-                          .on("click", clicked);
+                           });
                            
             });
         }
