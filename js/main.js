@@ -159,6 +159,9 @@ function start() {
         var filterWorldMap = function(filter_Option, filter_Value) {
 
             var country_List = [];
+            var count_List = [];
+            var max_Count = 0;
+
             // Sort countries by filter_Value
             d3.csv("data/aircraft_incidents.csv", function(error, data) {
                 if (error) throw error;
@@ -173,57 +176,153 @@ function start() {
                                 year = "00";
                             }
                             if(d.Event_Date.split("/")[2] == year) {
-                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                    country_List.push(d.Country);
+                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                //     var new_Country = new Object();
+                                    
+                                //     country_List.push(d.Country);
+                                // }
+
+                                if (d.Country.trim() !== "") {
+
+                                    // Fix US name as US
+                                    let temp_Country_Name = d.Country.trim();
+                                    temp_Country_Name = (temp_Country_Name === "United States") ? "United States of America" : temp_Country_Name;
+
+                                    // Find if there is one
+                                    let flag = false;
+                                    country_List.forEach(function(each) {
+                                        if (each.name === temp_Country_Name) {
+                                            each.count++;
+                                            flag = true;
+                                            return;
+                                        }
+                                    });
+
+                                    // Else, push new country
+                                    if (!flag) {
+                                        var new_Country = {
+                                            name: temp_Country_Name,
+                                            count: 1
+                                        };
+                                        country_List.push(new_Country);
+                                    }
                                 }
                             }
                             break;
 
                         case "aircraft_Make":
                             if (d.Make === filter_Value) {
-                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                    country_List.push(d.Country);
+                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                //     country_List.push(d.Country);
+                                // }
+
+                                if (d.Country.trim() !== "") {
+
+                                    // Fix US name as US
+                                    let temp_Country_Name = d.Country.trim();
+                                    temp_Country_Name = (temp_Country_Name === "United States") ? "United States of America" : temp_Country_Name;
+
+                                    // Find if there is one
+                                    let flag = false;
+                                    country_List.forEach(function(each) {
+                                        if (each.name === temp_Country_Name) {
+                                            each.count++;
+                                            flag = true;
+                                            return;
+                                        }
+                                    });
+
+                                    // Else, push new country
+                                    if (!flag) {
+                                        var new_Country = {
+                                            name: temp_Country_Name,
+                                            count: 1
+                                        };
+                                        country_List.push(new_Country);
+                                    }
                                 }
                             }
                             break;
 
                         case "broad_Phase_Of_Flight":
                             if (d.Broad_Phase_of_Flight === filter_Value) {
-                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
-                                    country_List.push(d.Country);
+                                // if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                //     country_List.push(d.Country);
+                                // }
+
+                                if (d.Country.trim() !== "") {
+
+                                    // Fix US name as US
+                                    let temp_Country_Name = d.Country.trim();
+                                    temp_Country_Name = (temp_Country_Name === "United States") ? "United States of America" : temp_Country_Name;
+
+                                    // Find if there is one
+                                    let flag = false;
+                                    country_List.forEach(function(each) {
+                                        if (each.name === temp_Country_Name) {
+                                            each.count++;
+                                            flag = true;
+                                            return;
+                                        }
+                                    });
+
+                                    // Else, push new country
+                                    if (!flag) {
+                                        var new_Country = {
+                                            name: temp_Country_Name,
+                                            count: 1
+                                        };
+                                        country_List.push(new_Country);
+                                    }
                                 }
                             }
                             break;
+                        
                     }
                 });
+
+                // Set up count_List and max_Count
+                for (let i = 0; i < country_List.length; i++) {
+                    count_List[i] = country_List[i].count;
+                    if (max_Count < count_List[i]) {
+                        max_Count = count_List[i];
+                    }
+                }
                 
                 // console.log("country_List is " + country_List);
+                // console.log("count_List is " + count_List);
+                // console.log("max_Count is " + max_Count);
             });
 
+            
+            // console.log(country_List);
+
+            // Apply color filter
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
-                // console.log("d is " + world.objects.countries.geometries[0].properties.name);
-
-                gBackground.selectAll("path")
-                        .data(topojson.feature(world, world.objects.countries).features)
-                        
-                        // .attr("d", path)
-                        .attr("class", function(d) {
-                            // console.log("d.properties.name is " + d.properties.name);
-                            if (d.properties) {
-                                let country_Name = (d.properties.name === "United States of America") ? "United States" : d.properties.name;
-                                if (country_List.includes(country_Name)) {
-                                    // console.log("finally here");
-                                    return "feature2";
-                                } else {
-                                    // console.log("hello...");
-                                    return "feature";
-                                }
-                            }
-                        })
-                    .on("click", clicked);
-
-                // gBackground.selectAll("path")
+                
+                gBackground.selectAll(".feature")
+                           .data(topojson.feature(world, world.objects.countries).features)
+                           .style("fill", function(d) {
+                               
+                               if (d.properties) {
+                                   let country_Name = d.properties.name;  
+                                   var color;
+                                   var flag2 = false;
+                                   country_List.forEach(function(each) {
+                                       if (each.name === country_Name) {
+                                           color = d3.interpolateYlOrRd(each.count / max_Count);
+                                           flag2 = true;
+                                           return;
+                                       }
+                                   });
+                                   if (!flag2) {
+                                       color = "#ccc";
+                                   }  
+                                   return color;
+                               }
+                           })
+                          .on("click", clicked);
                            
             });
         }
