@@ -12,7 +12,9 @@ function start() {
         active = d3.select(null);
     
     // projection definitions
-    var projection = d3.geoMercator();
+    var projection = d3.geoMercator()
+                       .scale(150)
+                       .translate([width_Map/2, height_Map/2 + 100]);
     var path = d3.geoPath()
                  .projection(projection);
 
@@ -53,9 +55,6 @@ function start() {
 
     // Aircraft incidents data
     var gDataPoints = svg_Map.append("g");
-    // Filtering box
-    var gFilterBox = svg_Box.append("g");
-    
     d3.csv("data/aircraft_incidents.csv", function(error, data) {
         
         // Draw points
@@ -123,10 +122,9 @@ function start() {
                       .insert("input")
                       .attr("class", "radio_Option")
                       .attr('type', 'radio')
-                      .attr({
-                          name: "world_Filter_Option",
-                          value: function(d) { return d.toString(); },
-                      })
+                      .attr('name', 'world_Filter_Option')
+                      .attr('value', d.toString());
+                    //   .attr('onclick', "filterMap(this.value)");
                     d3.select("#world_Filter_Options")
                       .append("label")
                       .attr("class", "radio_Option")
@@ -140,8 +138,41 @@ function start() {
             });
         };
 
+        // Function that retrieve the selected value from options
+        var radioButtonChange = function() {
+            
+            var option_List = document.forms[0];
+            for (let i = 0; i < option_List.length; i++) {
+                if (option_List[i].checked) {
+                    // console.log("selected is " + option_List[i].value);
+                    filterWorldMap(option_List[i].value);
+                }
+            }
+        }
 
+        // Function that filters the world map
+        var filterWorldMap = function(filter_Value) {
+            d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
+                if (error) throw error;
+
+                gBackground.selectAll("path")
+                    .data(topojson.feature(world, world.objects.countries).features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("class", "feature")
+                    .on("click", clicked);
+                
+                gBackground.append("path")
+                    .datum(topojson.mesh(world, world.objects.countries, function(a,b){return a !== b;}))
+                    .attr("class","mesh")
+                    .attr("d", path);
+
+            });
+        }
+
+        // On change
         d3.select("#world_Filter").on("change", dropdownChange);
+        d3.select("#world_Filter_Options").on("change", radioButtonChange);
     });
 
     // When clicked a country

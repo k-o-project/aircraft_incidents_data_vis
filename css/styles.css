@@ -68,3 +68,19 @@ body {
 
 
 
+.container {
+    margin: 0 auto;
+    padding: 8px 10px 0;
+    width: 1600px;
+    text-align: left;
+    zoom: 1;
+}
+
+.vis_Map {
+    float: left;
+    width: 1000px;
+}
+.vis_Box {
+    float: right;
+    width: 600px;
+}
