@@ -5,8 +5,8 @@ function start() {
     var centered;
 
     //variables
-    var width_Map = 1000,
-        width_Box = 600,
+    var width_Map = 960,
+        width_Box = 200,
         height_Map = 600,
         height_Box = 600,
         active = d3.select(null);
@@ -63,6 +63,7 @@ function start() {
             .enter()
             .append("circle")
             .style("fill", "#ffc216")
+            .style("opacity", 0.7)
             .attr("r", 1.75)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
@@ -124,15 +125,10 @@ function start() {
                       .attr('type', 'radio')
                       .attr('name', 'world_Filter_Option')
                       .attr('value', d.toString());
-                    //   .attr('onclick', "filterMap(this.value)");
                     d3.select("#world_Filter_Options")
                       .append("label")
                       .attr("class", "radio_Option")
-                      .html(d.toString());
-                    d3.select("#world_Filter_Options")
-                      .append("label")
-                      .attr("class", "radio_Option")
-                      .html("<br/>");
+                      .html(d.toString() + "<br/>");
                 });
                 
             });
@@ -171,7 +167,7 @@ function start() {
         }
 
         // On change
-        d3.select("#world_Filter").on("change", dropdownChange);
+        d3.select("#world_Filter").on("change", dropdownChange).style("font-size", "15px");
         d3.select("#world_Filter_Options").on("change", radioButtonChange);
     });
 

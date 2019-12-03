@@ -1,5 +1,6 @@
 .background {
     fill: none;
+    padding-top: 5px;
     pointer-events: all; 
 }
   
@@ -9,7 +10,7 @@
 }
   
 .feature.active {
-    fill: #804040;
+    fill: #68201d;
 }
 .feature:hover {
     fill: #356996;
@@ -24,63 +25,50 @@
 
 body {
     font-family: "calibri";
-    font-weight: bolder;
 }
 
-.h1 {
-    font-size: large;
-    text-align: center;
+h1 {
+    font-size: 50px;
+    padding-left: 5px;
+    border-bottom: #b70a02 3px solid;
+    display: inline-block;
+    
+}
+
+img {
+    height: 55px;
 }
 
 .container {
     margin: 0 auto;
     padding: 8px 10px 0;
-    width: 1600px;
+    width: 1200px;
     text-align: left;
     zoom: 1;
 }
 
-.vis_Map {
-    float: left;
-    width: 1000px;
-}
-.vis_Box {
-    float: right;
-    width: 600px;
-}
 
-.radio_Option {
-    /* display: block; */
-    cursor: pointer;
-    font-size: 15px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.radio_Option input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-
-
-
-.container {
-    margin: 0 auto;
-    padding: 8px 10px 0;
-    width: 1600px;
-    text-align: left;
-    zoom: 1;
-}
 
 .vis_Map {
     float: left;
-    width: 1000px;
+    width: 960px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cecece;
 }
 .vis_Box {
     float: right;
-    width: 600px;
+    width: 200px;
 }
+
+#world_Filter {
+    height: 30px;
+    font-family: "calibri";
+}
+
+#world_Filter_Options {
+    font-weight: normal;
+    font-family: "calibri";
+}
+
+
