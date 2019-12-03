@@ -161,7 +161,10 @@ function start() {
                     switch(filter_Option) {
 
                         case "event_Date":
-                            let year = (filter_Value > 2000) ? (filter_Value - 2000) : (filter_Value - 1900);
+                            let year = (filter_Value >= 2000) ? (filter_Value - 2000) : (filter_Value - 1900);
+                            if (year === 0) {
+                                year = "00";
+                            }
                             if(d.Event_Date.split("/")[2] == year) {
                                 if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
                                     country_List.push(d.Country);
