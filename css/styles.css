@@ -70,6 +70,11 @@ img {
 .vis_Box {
     float: right;
     width: 200px;
+    height: 500px;
+}
+#filter_Box {
+    width: 200px;
+    height: 500px;
 }
 
 #world_Filter {

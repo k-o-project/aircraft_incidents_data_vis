@@ -29,11 +29,7 @@ function start() {
         .attr("width", width_Map)
         .attr("height", height_Map)
         .on("click", reset);
-    var svg_Box = d3.select(".vis_Box")
-                    .append("svg")
-                    .attr("width", width_Box)
-                    .attr("height", height_Box);
-
+    
     // World map data
     var gBackground = svg_Map.append("g");
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
@@ -67,6 +63,17 @@ function start() {
             .attr("r", 1.75)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+            })
+            .on("click", function(d) {
+
+                // Remove old info
+                d3.selectAll(".all_Values").remove();
+
+                // Add new info
+                d3.select("#accident_Number")
+                  .append("text")
+                  .text(d.Accident_Number)
+                  .attr('class', 'all_Values');
             });
 
         // Handler for dropdown value change
