@@ -14,6 +14,17 @@
 .feature:hover {
     fill: #356996;
 }
+
+.feature2 {
+    fill: #f00;
+    cursor: pointer;
+}
+.test_Feature.active {
+    fill: #f00;
+}
+.feature2:hover {
+    fill: rgb(132, 22, 223);
+}
   
 .mesh {
     fill: none;

@@ -36,7 +36,7 @@ function start() {
 
     // World map data
     var gBackground = svg_Map.append("g");
-    d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
+    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
         if (error) throw error;
 
         gBackground.selectAll("path")
@@ -123,15 +123,14 @@ function start() {
                       .attr('type', 'radio')
                       .attr('name', 'world_Filter_Option')
                       .attr('value', d.toString());
-                    //   .attr('onclick', "filterMap(this.value)");
                     d3.select("#world_Filter_Options")
                       .append("label")
                       .attr("class", "radio_Option")
-                      .html(d.toString());
-                    d3.select("#world_Filter_Options")
-                      .append("label")
-                      .attr("class", "radio_Option")
-                      .html("<br/>");
+                      .html(d.toString() + "<br/>");
+                    // d3.select("#world_Filter_Options")
+                    //   .append("label")
+                    //   .attr("class", "radio_Option")
+                    //   .html("<br/>");
                 });
                 
             });
@@ -151,21 +150,31 @@ function start() {
 
         // Function that filters the world map
         var filterWorldMap = function(filter_Value) {
-            d3.json("https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-50m.json", function(error, world) {
+
+            d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
+                // console.log("d is " + world.objects.countries.geometries[0].properties.name);
 
                 gBackground.selectAll("path")
-                    .data(topojson.feature(world, world.objects.countries).features)
-                    .enter().append("path")
-                    .attr("d", path)
-                    .attr("class", "feature")
+                        .data(topojson.feature(world, world.objects.countries).features)
+                        
+                        // .attr("d", path)
+                    .attr("class", function(d) {
+                        // console.log("d.properties.name is " + d.properties.name);
+                        if (d.properties) {
+                            if (d.properties.name === "United Kingdom") {
+                                console.log("finally here");
+                                return "feature2";
+                            } else {
+                                console.log("hello...");
+                                return "feature";
+                            }
+                        }
+                    })
                     .on("click", clicked);
-                
-                gBackground.append("path")
-                    .datum(topojson.mesh(world, world.objects.countries, function(a,b){return a !== b;}))
-                    .attr("class","mesh")
-                    .attr("d", path);
 
+                // gBackground.selectAll("path")
+                           
             });
         }
 
