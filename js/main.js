@@ -5,8 +5,8 @@ function start() {
     var centered;
 
     //variables
-    var width_Map = 1000,
-        width_Box = 600,
+    var width_Map = 960,
+        width_Box = 200,
         height_Map = 600,
         height_Box = 600,
         active = d3.select(null);
@@ -62,7 +62,9 @@ function start() {
             .data(data)
             .enter()
             .append("circle")
-            .attr("r", 1)
+            .style("fill", "#ffc216")
+            .style("opacity", 0.7)
+            .attr("r", 1.75)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
             });
@@ -127,10 +129,6 @@ function start() {
                       .append("label")
                       .attr("class", "radio_Option")
                       .html(d.toString() + "<br/>");
-                    // d3.select("#world_Filter_Options")
-                    //   .append("label")
-                    //   .attr("class", "radio_Option")
-                    //   .html("<br/>");
                 });
                 
             });
@@ -138,18 +136,59 @@ function start() {
 
         // Function that retrieve the selected value from options
         var radioButtonChange = function() {
+
+            var selected_Option = document.getElementById("world_Filter").options[document.getElementById("world_Filter").selectedIndex].value;
             
             var option_List = document.forms[0];
             for (let i = 0; i < option_List.length; i++) {
                 if (option_List[i].checked) {
                     // console.log("selected is " + option_List[i].value);
-                    filterWorldMap(option_List[i].value);
+                    filterWorldMap(selected_Option, option_List[i].value);
                 }
             }
         }
 
         // Function that filters the world map
-        var filterWorldMap = function(filter_Value) {
+        var filterWorldMap = function(filter_Option, filter_Value) {
+
+            var country_List = [];
+            // Sort countries by filter_Value
+            d3.csv("data/aircraft_incidents.csv", function(error, data) {
+                if (error) throw error;
+
+                data.forEach(function(d) {
+
+                    switch(filter_Option) {
+
+                        case "event_Date":
+                            let year = (filter_Value > 2000) ? (filter_Value - 2000) : (filter_Value - 1900);
+                            if(d.Event_Date.split("/")[2] == year) {
+                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                    country_List.push(d.Country);
+                                }
+                            }
+                            break;
+
+                        case "aircraft_Make":
+                            if (d.Make === filter_Value) {
+                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                    country_List.push(d.Country);
+                                }
+                            }
+                            break;
+
+                        case "broad_Phase_Of_Flight":
+                            if (d.Broad_Phase_of_Flight === filter_Value) {
+                                if (!country_List.includes(d.Country) && d.Country.trim() !== "") {
+                                    country_List.push(d.Country);
+                                }
+                            }
+                            break;
+                    }
+                });
+                
+                // console.log("country_List is " + country_List);
+            });
 
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
@@ -159,18 +198,19 @@ function start() {
                         .data(topojson.feature(world, world.objects.countries).features)
                         
                         // .attr("d", path)
-                    .attr("class", function(d) {
-                        // console.log("d.properties.name is " + d.properties.name);
-                        if (d.properties) {
-                            if (d.properties.name === "United Kingdom") {
-                                console.log("finally here");
-                                return "feature2";
-                            } else {
-                                console.log("hello...");
-                                return "feature";
+                        .attr("class", function(d) {
+                            // console.log("d.properties.name is " + d.properties.name);
+                            if (d.properties) {
+                                let country_Name = (d.properties.name === "United States of America") ? "United States" : d.properties.name;
+                                if (country_List.includes(country_Name)) {
+                                    // console.log("finally here");
+                                    return "feature2";
+                                } else {
+                                    // console.log("hello...");
+                                    return "feature";
+                                }
                             }
-                        }
-                    })
+                        })
                     .on("click", clicked);
 
                 // gBackground.selectAll("path")
@@ -179,7 +219,7 @@ function start() {
         }
 
         // On change
-        d3.select("#world_Filter").on("change", dropdownChange);
+        d3.select("#world_Filter").on("change", dropdownChange).style("font-size", "15px");
         d3.select("#world_Filter_Options").on("change", radioButtonChange);
     });
 
