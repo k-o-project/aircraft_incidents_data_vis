@@ -147,3 +147,12 @@ h3, p {
 h3 {
     color: #f0a700;
 }
+
+.each_Dot {
+    fill: #ffb816;
+    opacity: 0.8;
+}
+
+.each_Dot.active {
+    fill: red;
+}

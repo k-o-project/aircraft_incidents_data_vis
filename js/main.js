@@ -54,15 +54,20 @@ function start() {
     var gDataPoints = svg_Map.append("g");
     d3.csv("data/aircraft_incidents.csv", function(error, data) {
 
-        gDataPoints.append("svg:image").attr("xlink:href", "img/color_scale.png");
+        gDataPoints.append("svg:image")
+                   .attr("xlink:href", "img/color_scale.png")
+                   .attr("x", "5px")
+                   .attr("y", "580px")
+                   .attr("width", "250px");
         
         // Draw points
         gDataPoints.selectAll("circles.points")
             .data(data)
             .enter()
             .append("circle")
-            .style("fill", "#ffb816")
-            .style("opacity", 0.8)
+            .attr("class", "each_Dot")
+            // .style("fill", "#ffb816")
+            // .style("opacity", 0.8)
             .attr("r", 2)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
@@ -72,7 +77,11 @@ function start() {
                 // TODO: Remove and add new notifier
                 // gDataPoints.append("circle")
                 //            .attr("class", "red_Dot")
-                //            .attr("cx", )
+                //            .style
+                //            .attr("transform", function(l) {
+                //             return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
+                //            });
+                d3.select(this).classed("active", true);
 
                 // Remove old accident's information
                 d3.select(".tooltip").remove();
