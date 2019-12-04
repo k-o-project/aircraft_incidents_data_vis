@@ -63,8 +63,6 @@ img {
     zoom: 1;
 }
 
-
-
 .vis_Map {
     /* float: left; */
     position: absolute;
@@ -74,6 +72,7 @@ img {
     border-width: 1px;
     border-color: #cecece;
 }
+
 .vis_Box {
     float: right;
     width: 200px;
@@ -105,5 +104,13 @@ div.tooltip {
     border-radius: 5px;
     pointer-events: none;
     color: white;
-    display: inline-block;
-  }
+}
+
+
+.radio_Option input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
