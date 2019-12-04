@@ -15,14 +15,14 @@
 
     <body>
         <h1><img src="img/airplane.jpg"/>Aircraft Incidents</h1>
-        <h3>Use dropdown and filter to see data visualization. You can also drag and zoom the map. Click dots for more details about the incident.</h3>
+        <h4>Use dropdown and filter to see data visualization. You may click country to zoom. Click dots for more details about the incident.</h4>
         <div class="container">
 
             <div class="vis_Map"></div>
 
             <div class="vis_Box">
                 <div id="filter_Box">
-                    Choose a filter:
+                    <font size="4px"><strong>Choose a filter: </strong></font>
                     <select id="world_Filter">
                         <option value="">--- Select ---</option>
                         <option value="event_Date">Accident Date</option>
@@ -31,15 +31,15 @@
                     </select>
     
                     <form id="world_Filter_Options"></form>
+                    <div id="accident_List_Box">
+                            <font size="4px"><strong>Choose an accident in</strong></font></br><h3 id="country_Name"></h3><p> : </p><br/>
+                        
+                        <select id="accident_List">
+                            <option value="">--- Select ---</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div id="accident_List_Box">
-                    Choose an accident in <h3 id="country_Name"><h3>: </h3><br/>
-                    
-                    <select id="accident_List">
-                        <option value="">--- Select ---</option>
-                    </select>
-                </div>
             </div>
 
         </div>
