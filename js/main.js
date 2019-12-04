@@ -71,6 +71,9 @@ function start() {
                 //            .attr("class", "red_Dot")
                 //            .attr("cx", )
 
+                // Remove old accident's information
+                d3.select(".tooltip").remove();
+
                 // Div for each accident's information
                 var div = d3.select("body").append("div")
                 .attr("class", "tooltip")
@@ -311,8 +314,6 @@ function start() {
                 
             });
 
-            // TODO:
-            // 1) Change color scale
             // Apply color filter
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
@@ -371,6 +372,11 @@ function start() {
         
         // Function that displays each selected accident's information
         function displayInfo(selected_Option) {
+
+            // Remove old accident's information
+            d3.select(".tooltip").remove();
+
+            // Update new accident's information
             d3.csv("data/aircraft_incidents.csv", function(error, data) {
                 data.forEach(function(d) {
                     if (d.Accident_Number === selected_Option) {
@@ -446,6 +452,7 @@ function start() {
 
         // Add new accidents in the select box
         if (centered) {
+
             var accident_Dropdown = d3.select("#accident_List");
             var current_Country_Name = d.properties.name;
             current_Country_Name = (current_Country_Name === "United States of America") ? "United States" : current_Country_Name;
@@ -461,7 +468,6 @@ function start() {
                         accident_Dropdown.append('option').attr('class', 'accidents').attr('value', each.Accident_Number).text(each.Accident_Number);
                     }
                 });
-                
             });
         }
     }
@@ -478,5 +484,4 @@ function start() {
     var stopped = function() {
         if (d3.event.defaultPrevented) d3.event.stopPropagation();
     }
-
 }

@@ -46,7 +46,7 @@ h1 {
     
 }
 
-h3 {
+h4 {
     padding-left: 10px;
     font-size: small;
 }
@@ -91,6 +91,18 @@ img {
     border: none;
     font-family: "calibri";
     border-radius: 3px;
+    display: inline-block;
+}
+
+#accident_List {
+    background-color: #ffb816;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    font-family: "calibri";
+    border-radius: 3px;
+    display: inline-block;
 }
 
 
@@ -128,3 +140,10 @@ div.tooltip {
     cursor: pointer;
 }
 
+h3, p {
+    display: inline;
+}
+
+h3 {
+    color: #f0a700;
+}
