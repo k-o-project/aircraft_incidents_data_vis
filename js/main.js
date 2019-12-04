@@ -48,10 +48,13 @@ function start() {
             .attr("d", path);
 
     });
+    
 
     // Aircraft incidents data
     var gDataPoints = svg_Map.append("g");
     d3.csv("data/aircraft_incidents.csv", function(error, data) {
+
+        gDataPoints.append("svg:image").attr("xlink:href", "img/color_scale.png");
         
         // Draw points
         gDataPoints.selectAll("circles.points")
@@ -104,6 +107,7 @@ function start() {
                     .style("top", "220px");
             });
 
+            
         // Handler for dropdown value change
         var dropdownChange = function() {
             var selected_Option = document.getElementById("world_Filter").options[document.getElementById("world_Filter").selectedIndex].value;
