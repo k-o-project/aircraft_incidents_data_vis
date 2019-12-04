@@ -29,6 +29,10 @@ function start() {
         .attr("width", width_Map)
         .attr("height", height_Map)
         .on("click", reset);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
     
     // World map data
     var gBackground = svg_Map.append("g");
@@ -58,22 +62,26 @@ function start() {
             .data(data)
             .enter()
             .append("circle")
-            .style("fill", "#ffc216")
-            .style("opacity", 0.7)
-            .attr("r", 1.75)
+            .style("fill", "#ffb816")
+            .style("opacity", 0.8)
+            .attr("r", 2)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
             })
             .on("click", function(d) {
 
-                // Remove old info
-                d3.selectAll(".all_Values").remove();
-
-                // Add new info
-                d3.select("#accident_Number")
-                  .append("text")
-                  .text(d.Accident_Number)
-                  .attr('class', 'all_Values');
+                div.transition().duration(200).style("opacity", .8);
+                div.html("</br><strong>Accident Number: </strong><span style='color:#ffb816'>  " + d.Accident_Number + "</span>" + 
+                    "</br><strong>Event Date: </strong><span style='color:#ffb816'>  " + d.Event_Date + "</span>" + 
+                    "</br><strong>Location: </strong><span style='color:#ffb816'>  " + d.Location + "</span>" + 
+                    "</br><strong>Country: </strong><span style='color:#ffb816'>  " + d.Country + "</span>" + 
+                    "</br><strong>Airport Code: </strong><span style='color:#ffb816'>  " + d.Airport_Code + "</span>" + 
+                    "</br><strong>Airport Name: </strong><span style='color:#ffb816'>  " + d.Airport_Name + "</span>" + 
+                    "</br><strong>Injury Severity :</strong><span style='color:#ffb816'>  " + d.Injury_Severity + "</span>" + 
+                    "</br><strong>Aircraft Damage :</strong><span style='color:#ffb816'>  " + d.Accident_Damage + "</span></br>" )
+            
+                    .style("left", "710px")
+                    .style("top", "205px");
             });
 
         // Handler for dropdown value change
@@ -303,7 +311,7 @@ function start() {
                                 //    var flag2 = false;
                                    country_List.forEach(function(each) {
                                        if (each.name === country_Name) {
-                                           color = d3.interpolateYlOrRd(each.count / max_Count);
+                                           color = d3.interpolateRdBu(each.count / max_Count);
                                            flag2 = true;
                                            return;
                                        }
