@@ -293,14 +293,13 @@ function start() {
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
                 
-                gBackground.selectAll(".feature")
+                gBackground.selectAll("path")
                            .data(topojson.feature(world, world.objects.countries).features)
                            .style("fill", function(d) {
                                
                                if (d.properties) {
                                    let country_Name = d.properties.name;  
                                    var color = "#ccc";
-                                //    var flag2 = false;
                                    country_List.forEach(function(each) {
                                        if (each.name === country_Name) {
                                            color = d3.interpolateYlOrRd(each.count / max_Count);
@@ -308,13 +307,9 @@ function start() {
                                            return;
                                        }
                                    });
-                                //    if (!flag2) {
-                                //        color = "#ccc";
-                                //    }  
                                    return color;
                                }
                            });
-                           
             });
         }
 
@@ -325,6 +320,7 @@ function start() {
 
     // When clicked a country
     var clicked = function(d) {
+        // console.log("d is " + d.properties.name);
         var x, y, k;
 
         if (d && centered !== d) {
@@ -352,6 +348,20 @@ function start() {
             .duration(1000)
             .attr("transform", "translate(" + width_Map / 2 + "," + height_Map / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
+
+        // Remove old and Add new accidents in the select box
+        var accident_Dropdown = d3.select("#accident_List");
+        var current_Country_Name = d.properties.name;
+        current_Country_Name = (current_Country_Name === "United States of America") ? "United States" : current_Country_Name;
+        d3.select(".accidents").remove();
+        d3.csv("data/aircraft_incidents.csv", function(error, data) {
+            data.forEach(function(each) {
+                if (each.Country === d.properties.name) {
+                    accident_Dropdown.append('option').attr('class', 'accidents').attr('value', each.Accident_Number).text(each.Accident_Number);
+                }
+            });
+            
+        });
     }
 
     // When zooming out from a country
