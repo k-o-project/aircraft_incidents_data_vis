@@ -16,7 +16,7 @@
     fill: #7d7d7d;
 }
 
-.feature2 {
+/* .feature2 {
     fill: #f00;
     cursor: pointer;
 }
@@ -25,7 +25,7 @@
 }
 .feature2:hover {
     fill: rgb(132, 22, 223);
-}
+} */
   
 .mesh {
     fill: none;
