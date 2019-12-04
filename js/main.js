@@ -66,21 +66,13 @@ function start() {
             .enter()
             .append("circle")
             .attr("class", "each_Dot")
-            // .style("fill", "#ffb816")
-            // .style("opacity", 0.8)
             .attr("r", 2)
             .attr("transform", function(d) {
                 return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
             })
             .on("click", function(d) {
 
-                // TODO: Remove and add new notifier
-                // gDataPoints.append("circle")
-                //            .attr("class", "red_Dot")
-                //            .style
-                //            .attr("transform", function(l) {
-                //             return "translate(" + projection([d.Longitude, d.Latitude]) + ")";
-                //            });
+                d3.selectAll(".each_Dot").classed("active", false);
                 d3.select(this).classed("active", true);
 
                 // Remove old accident's information
