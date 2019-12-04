@@ -29,10 +29,6 @@ function start() {
         .attr("width", width_Map)
         .attr("height", height_Map)
         .on("click", reset);
-
-    var div = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
     
     // World map data
     var gBackground = svg_Map.append("g");
@@ -53,6 +49,11 @@ function start() {
 
     });
 
+    // Div for each accident's information
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
     // Aircraft incidents data
     var gDataPoints = svg_Map.append("g");
     d3.csv("data/aircraft_incidents.csv", function(error, data) {
@@ -70,6 +71,12 @@ function start() {
             })
             .on("click", function(d) {
 
+                // TODO: Remove and add new notifier
+                // gDataPoints.append("circle")
+                //            .attr("class", "red_Dot")
+                //            .attr("cx", )
+
+                // Add Information
                 div.transition().duration(200).style("opacity", .8);
                 div.html("</br><strong>Accident Number: </strong><span style='color:#ffb816'>  " + d.Accident_Number + "</span>" + 
                     "</br><strong>Event Date: </strong><span style='color:#ffb816'>  " + d.Event_Date + "</span>" + 
@@ -80,8 +87,8 @@ function start() {
                     "</br><strong>Injury Severity :</strong><span style='color:#ffb816'>  " + d.Injury_Severity + "</span>" + 
                     "</br><strong>Aircraft Damage :</strong><span style='color:#ffb816'>  " + d.Accident_Damage + "</span></br>" )
             
-                    .style("left", "710px")
-                    .style("top", "205px");
+                    .style("left", "700px")
+                    .style("top", "220px");
             });
 
         // Handler for dropdown value change
@@ -129,7 +136,6 @@ function start() {
 
                 // Remove old options and color the world map if nothing is selected
                 d3.selectAll(".radio_Option").remove();
-                console.log("selected_Option is " + selected_Option);
                 if (selected_Option === "") {
                     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                         gBackground.selectAll(".feature")
@@ -357,22 +363,26 @@ function start() {
             .attr("transform", "translate(" + width_Map / 2 + "," + height_Map / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
 
-        // Remove old and Add new accidents in the select box
-        var accident_Dropdown = d3.select("#accident_List");
-        var current_Country_Name = d.properties.name;
-        current_Country_Name = (current_Country_Name === "United States of America") ? "United States" : current_Country_Name;
-        d3.select(".accidents").remove();
-        d3.csv("data/aircraft_incidents.csv", function(error, data) {
-            data.forEach(function(each) {
-                if (each.Country === d.properties.name) {
-                    accident_Dropdown.append('option').attr('class', 'accidents').attr('value', each.Accident_Number).text(each.Accident_Number);
-                }
-            });
+        // Remove old accidents
+        d3.selectAll(".accidents").remove();
+
+        // Add new accidents in the select box
+        if (centered) {
+            var accident_Dropdown = d3.select("#accident_List");
+            var current_Country_Name = d.properties.name;
+            current_Country_Name = (current_Country_Name === "United States of America") ? "United States" : current_Country_Name;
             
-        });
+            d3.csv("data/aircraft_incidents.csv", function(error, data) {
+                data.forEach(function(each) {
+                    if (each.Country === d.properties.name) {
+                        accident_Dropdown.append('option').attr('class', 'accidents').attr('value', each.Accident_Number).text(each.Accident_Number);
+                    }
+                });
+                
+            });
+        }
     }
 
-    // When zooming out from a country
     var reset = function() {
         active.classed("active", false);
         active = d3.select(null);
