@@ -41,7 +41,7 @@ body {
 h1 {
     font-size: 50px;
     padding-left: 5px;
-    border-bottom: #ffb816 3px solid;
+    border-bottom: #ffb816 5px solid;
     display: inline-block;
     
 }
@@ -84,14 +84,29 @@ img {
 }
 
 #world_Filter {
-    height: 30px;
+    background-color: #ffb816;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
     font-family: "calibri";
+    border-radius: 3px;
+}
+
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
 }
 
 #world_Filter_Options {
     font-weight: normal;
     font-family: "calibri";
+    display: inline-block;
 }
+
 
 div.tooltip {
     position: absolute;
@@ -112,5 +127,4 @@ div.tooltip {
     opacity: 0;
     cursor: pointer;
 }
-
 
