@@ -88,7 +88,17 @@ function start() {
                     "</br><strong>Airport Code: </strong><span style='color:#ffb816'>  " + d.Airport_Code + "</span>" + 
                     "</br><strong>Airport Name: </strong><span style='color:#ffb816'>  " + d.Airport_Name + "</span>" + 
                     "</br><strong>Injury Severity :</strong><span style='color:#ffb816'>  " + d.Injury_Severity + "</span>" + 
-                    "</br><strong>Aircraft Damage :</strong><span style='color:#ffb816'>  " + d.Accident_Damage + "</span></br>" )
+                    "</br><strong>Aircraft Damage :</strong><span style='color:#ffb816'>  " + d.Accident_Damage + "</span>" +
+                    "</br><strong>Registration_Number: </strong><span style='color:#ffb816'>  " + d.Registration_Number + "</span>" + 
+                    "</br><strong>Make: </strong><span style='color:#ffb816'>  " + d.Make + "</span>" + 
+                    "</br><strong>Model: </strong><span style='color:#ffb816'>  " + d.Model + "</span>" + 
+                    "</br><strong>Schedule: </strong><span style='color:#ffb816'>  " + d.Schedule + "</span>" + 
+                    "</br><strong>Air_Carrier: </strong><span style='color:#ffb816'>  " + d.Air_Carrier + "</span>" + 
+                    "</br><strong>Total_Fatal_Injuries: </strong><span style='color:#ffb816'>  " + d.Total_Fatal_Injuries + "</span>" + 
+                    "</br><strong>Total_Serious_Injuries: </strong><span style='color:#ffb816'>  " + d.Total_Serious_Injuries + "</span>" + 
+                    "</br><strong>Total_Uninjured: </strong><span style='color:#ffb816'>  " + d.Total_Uninjured + "</span>" +
+                    "</br><strong>Weather_Condition: </strong><span style='color:#ffb816'>  " + d.Weather_Condition + "</span>" + 
+                    "</br><strong>Broad_Phase_of_Flight: </strong><span style='color:#ffb816'>  " + d.Broad_Phase_of_Flight + "</span></br>") 
             
                     .style("left", "700px")
                     .style("top", "220px");
