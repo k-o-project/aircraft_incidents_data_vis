@@ -113,6 +113,11 @@ function start() {
         var dropdownChange = function() {
             var selected_Option = document.getElementById("world_Filter").options[document.getElementById("world_Filter").selectedIndex].value;
 
+            // Remove dot notifier
+            d3.selectAll(".each_Dot").classed("active", false);
+            // Remove old accident's information
+            d3.select(".tooltip").remove();
+
             updateOptions(selected_Option);
         };
 
@@ -382,6 +387,11 @@ function start() {
         var accidentListChange = function() {
             var selected_Option = document.getElementById("accident_List").options[document.getElementById("accident_List").selectedIndex].value;
 
+            // Remove dot notifier
+            d3.selectAll(".each_Dot").classed("active", false);
+            // Remove old accident's information
+            d3.select(".tooltip").remove();
+
             displayInfo(selected_Option);
         }
         
@@ -465,6 +475,9 @@ function start() {
             .duration(1000)
             .attr("transform", "translate(" + width_Map / 2 + "," + height_Map / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
             .style("stroke-width", 1.5 / k + "px");
+
+        // Remove dot notifier
+        d3.selectAll(".each_Dot").classed("active", false);
 
         // Remove old accidents
         d3.selectAll(".accidents").remove();
