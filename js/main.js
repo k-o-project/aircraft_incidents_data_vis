@@ -150,6 +150,7 @@ function start() {
                       .attr('type', 'radio')
                       .attr('name', 'world_Filter_Option')
                       .attr('value', d.toString());
+                    
                     d3.select("#world_Filter_Options")
                       .append("label")
                       .attr("class", "radio_Option")
