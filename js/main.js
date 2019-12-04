@@ -70,6 +70,8 @@ function start() {
             })
             .on("click", function(d) {
 
+                /////////TODO ::::: close after re-click ///////////
+
                 div.transition().duration(200).style("opacity", .8);
                 div.html("</br><strong>Accident Number: </strong><span style='color:#ffb816'>  " + d.Accident_Number + "</span>" + 
                     "</br><strong>Event Date: </strong><span style='color:#ffb816'>  " + d.Event_Date + "</span>" + 
@@ -297,12 +299,22 @@ function start() {
                 }
             });
 
+            //////// TODO:::::::  
+            ///// 1) change color scale
+            ///// 2) set active color after filter and clicking the country 
+
             // Apply color filter
             d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                 if (error) throw error;
                 
                 gBackground.selectAll(".feature")
                            .data(topojson.feature(world, world.objects.countries).features)
+                           .on("mouseover", function(d) {
+                               d3.select(this).style("fill", "#7d7d7d")
+                           })
+                           .on("mouseout", function(d) {
+                               d3.select(this).style("fill", "#cecece")
+                           })
                            .style("fill", function(d) {
                                
                                if (d.properties) {
@@ -311,7 +323,7 @@ function start() {
                                 //    var flag2 = false;
                                    country_List.forEach(function(each) {
                                        if (each.name === country_Name) {
-                                           color = d3.interpolateRdBu(each.count / max_Count);
+                                           color = d3.interpolateOrRd(each.count / max_Count);
                                            flag2 = true;
                                            return;
                                        }
