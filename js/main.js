@@ -139,8 +139,14 @@ function start() {
                 if (selected_Option === "") {
                     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json", function(error, world) {
                         gBackground.selectAll(".feature")
-                           .data(topojson.feature(world, world.objects.countries).features)
-                           .style("fill", "#ccc");
+                                    .data(topojson.feature(world, world.objects.countries).features)
+                                    .on("mouseover", function(d) {
+                                        d3.select(this).style("fill", "#7d7d7d");
+                                    })
+                                    .on("mouseout", function(d) {
+                                        d3.select(this).style("fill", "#ccc");
+                                    })
+                                    .style("fill", "#ccc");
                     });
                 }
 
@@ -302,6 +308,7 @@ function start() {
                         max_Count = count_List[i];
                     }
                 }
+                
             });
 
             // TODO:
@@ -318,16 +325,22 @@ function start() {
                            .on("mouseout", function(d) {
                                d3.select(this).style("fill", function(d) {
                                     if (d.properties) {
-                                        let country_Name = d.properties.name;  
-                                        var color = "#ccc";
-                                        country_List.forEach(function(each) {
-                                            if (each.name === country_Name) {
-                                                color = d3.interpolateOrRd(each.count / max_Count);
-                                                flag2 = true;
-                                                return;
-                                            }
-                                        });
-                                        return color;
+                                        if (country_List.length > 0) {
+                                            let country_Name = d.properties.name;  
+                                            var color = "#ccc";
+                                            country_List.forEach(function(each) {
+                                                if (each.name === country_Name) {
+                                                    color = d3.interpolateOrRd(each.count / max_Count);
+                                                    flag2 = true;
+                                                    return;
+                                                }
+                                            });
+                                            return color;
+                                        }
+
+                                        if (country_List.legnth === 0) {
+                                            return "#ccc";
+                                        }
                                     }
                                });
                            })
@@ -356,7 +369,6 @@ function start() {
             displayInfo(selected_Option);
         }
         
-        // TODO: remove info when click others
         // Function that displays each selected accident's information
         function displayInfo(selected_Option) {
             d3.csv("data/aircraft_incidents.csv", function(error, data) {
@@ -429,12 +441,19 @@ function start() {
         // Remove old accident's information
         d3.select(".tooltip").remove();
 
+        // Remove current country name
+        d3.select('.country_Name_HTML').remove();
+
         // Add new accidents in the select box
         if (centered) {
             var accident_Dropdown = d3.select("#accident_List");
             var current_Country_Name = d.properties.name;
             current_Country_Name = (current_Country_Name === "United States of America") ? "United States" : current_Country_Name;
             
+            // Update country name on html
+            var current_Country_Name_HTML = d3.select("#country_Name").append("label").attr('class', 'country_Name_HTML');
+            current_Country_Name_HTML.html(current_Country_Name);
+
             // Add new incident option
             d3.csv("data/aircraft_incidents.csv", function(error, data) {
                 data.forEach(function(each) {
