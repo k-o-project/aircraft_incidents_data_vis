@@ -1,5 +1,5 @@
 # Aircraft Incident Data Visualization
-This is a project from CS 4460 Intro to Visualization from Georgia Institute of Technology. It is a data visualization of aircraft incident from 1995 to 2016 from all around the world. 
+This is a project from CS 4460 Intro to Visualization from Georgia Institute of Technology. It is a data visualization of aircraft incident from 1995 to 2016 in all around the world. We used d3, javascript, html and css for this project. 
 
 
 ### Screenshots
